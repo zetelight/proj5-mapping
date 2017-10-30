@@ -1,5 +1,5 @@
 #
-# Project 4:  Brevet calculator
+# Project 5: Mapping
 #
 # Gnu make and bash are required. 
 #
