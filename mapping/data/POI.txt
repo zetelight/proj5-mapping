@@ -1,3 +1,3 @@
 University of Oregon,44.0448,-123.0726
-Eugene Station,44.0422,-123.0893
+Eugene Station,44.048233,-123.093439
 Autzen Stadium,44.0583,-123.0685

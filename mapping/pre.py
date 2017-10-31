@@ -1,3 +1,6 @@
+"""
+Pre-process data of "Description, lantitude, longtitude"
+"""
 import logging
 
 logging.basicConfig(format='%(levelname)s:%(message)s',
@@ -6,6 +9,12 @@ log = logging.getLogger(__name__)
 
 
 def process(raw):
+    """
+    Args:
+        raw, a text file
+    returns:
+        a list of dictionary named "entry" which contains "Description", "lat", "lon"
+    """
     locations = []
     for line in raw:
         entry = {}

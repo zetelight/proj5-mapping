@@ -27,7 +27,8 @@ def index():
     """Main application page; most users see only this"""
     app.logger.debug("Main page entry")
     flask.g.POI = POI  # To be accessible in Jinja2 on page
-    return flask.render_template('mapping.html')
+    flask.g.MAP_KEY = app.map_key
+    return flask.render_template('mapping.html', POI=POI)
 
 
 @app.route("/refresh")
