@@ -3,3 +3,10 @@
 *.iml
 .gitattributes
 *.ini
+
+#virtual environment
+env/
+
+#Pycharm
+__pycache__/
+.idea/

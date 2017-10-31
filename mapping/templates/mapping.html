@@ -1,10 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <!--load the Leaflet-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+          integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+            integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+            crossorigin=""></script>
+    <!--load the MapQuest Maps-->
+    <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=ArU4fSGrGRQLFD5MMfwb4GzWsgdU1weJ"></script>
+    <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-geocoding.js?key=ArU4fSGrGRQLFD5MMfwb4GzWsgdU1weJ"></script>
+    <title>Mapping</title>
 </head>
 <body>
+<div id="mapid" style="width: 60%; height: 600px">></div>
+<script>
+    // Initialization map
+    var mymap = L.map('mapid').setView([44.0521, -123.0868], 10);
 
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox.streets',
+        accessToken: 'pk.eyJ1IjoiemV0ZWxpZ2h0IiwiYSI6ImNqOWRyZ3licjIyZTczM3M0M3NwN3V6N2oifQ.0cPyFq8A_lbYEMagcpwPMw'
+    }).addTo(mymap);
+
+    // Pre-load some interesting markers on map.
+{#        {% for entry in g.POI %}
+            L.marker([entry.lat, entry.lon]).addTo(mymap)
+                                          .bindPopup(String(entry.Description));
+            console.log("Add a maker:" + entry[0])
+
+        {% endfor %}#}
+    L.marker([44.0521, -123.0868]).addTo(mymap).bindPopup("I am super good");
+
+    // When click somewhere, a maker is created. If click the marker, the address should be shown.
+    // Credit: https://stackoverflow.com/questions/18388288/how-do-you-add-marker-to-map-using-leaflet-map-onclick-function-event-handl
+    mymap.on('click', addPin);
+    var popup = L.popup();
+    var pin = new L.marker([44.0521, -123.0868]).addTo(mymap).bindPopup(popup);
+    function addPin(e) {
+        // Add marker to map at click location; add popup window
+        pin.setLatLng(e.latlng);
+        geocode.reverse(e.latlng);
+        console.log("A new pin is created");
+    }
+
+    var geocode = MQ.geocode().on('success', function (e) {
+        popup.setContent(geocode.describeLocation(e.result.best));
+    });
+
+    // Show the current location with a particular marker
+    function onLocationFound(e) {
+        var radius = e.accuracy / 2;
+        L.marker(e.latlng).addTo(mymap)
+                          .bindPopup("You are here!")
+                          .openPopup();
+        L.circle(e.latlng, radius).addTo(mymap);
+    }
+
+    function onLocationError(e) {
+        alert(e.message);
+    }
+
+    mymap.on('locationfound', onLocationFound);
+    mymap.on('locationerror', onLocationError);
+    mymap.locate({setView: true, maxZoom: 14});
+
+</script>
 </body>
 </html>

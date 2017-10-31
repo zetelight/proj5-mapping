@@ -6,7 +6,19 @@ log = logging.getLogger(__name__)
 
 
 def process(raw):
-    print("TEST")
+    locations = []
+    for line in raw:
+        entry = {}
+        log.debug("Line: {}".format(line))
+        line = line.strip()
+        if len(line) == 0 or line[0] == "#":
+            log.debug("Skipping")
+            continue
+        parts = line.split(',')
+        for i in range(len(parts)):
+            entry["Description"], entry["lat"], entry["lon"] = parts[0], float(parts[1]), float(parts[2])
+        locations.append(entry)
+    return locations
 
 
 def main():

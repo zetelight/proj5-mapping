@@ -1,23 +1,18 @@
 import flask
 import logging
 # Our own modules
-import pre # Pre-process schedule file
+import pre  # Pre-process schedule file
 import config  # Configure from configuration files or command line
 
 ###
 # Globals
 ###
 app = flask.Flask(__name__)
-if __name__ == "__main__":
-    configuration = config.configuration()
-else:
-    # If we aren't main, the command line doesn't belong to us
-    configuration = config.configuration(proxied=True)
-
-if configuration.DEBUG:
-    app.logger.setLevel(logging.DEBUG)
-
-POI = pre.process(open(configuration.POI))
+CONFIG = config.configuration()
+app.secret_key = CONFIG.SECRET_KEY
+app.map_key = CONFIG.MAP_KEY
+POI = pre.process(open(CONFIG.POI))
+logging.info(POI)
 
 
 ###
@@ -40,7 +35,7 @@ def refresh():
     """Admin user (or debugger) can use this to reload the schedule."""
     app.logger.debug("Refreshing schedule")
     global POI
-    POI = pre.process(open(configuration.POI))
+    POI = pre.process(open(CONFIG.POI))
     return flask.redirect(flask.url_for("index"))
 
 
@@ -74,5 +69,14 @@ def no_you_cant(error):
 # turn on debugging.  Connects to anything (0.0.0.0)
 # so that we can test remote connections.
 #
+
+#############
+
+
+app.debug = CONFIG.DEBUG
+if app.debug:
+    app.logger.setLevel(logging.DEBUG)
+
 if __name__ == "__main__":
-    app.run(port=configuration.PORT, host="0.0.0.0")
+    print("Opening for global access on port {}".format(CONFIG.PORT))
+    app.run(port=CONFIG.PORT, host="0.0.0.0")

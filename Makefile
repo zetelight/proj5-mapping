@@ -1,5 +1,5 @@
 #
-# Project 5: Mapping
+# Project 5:  LeafNet Map
 #
 # Gnu make and bash are required. 
 #
@@ -19,7 +19,7 @@ env:
 ## Installation
 install: env credentials
 
-credentials: brevets/credentials.ini
+credentials: mapping/credentials.ini
 
 brevets/credentials.ini: 
 	echo "You must manually create credentials.ini"
@@ -34,9 +34,6 @@ start:	env credentials
 
 stop: 	env credentials
 	bash stop.sh
-
-test:	env
-	($(INVENV) cd brevets; nosetests) 
 
 
 ##
